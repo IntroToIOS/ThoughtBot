@@ -59,7 +59,7 @@
 
 - (void) didTapPost: (UIButton *) button
 {
-	
+	[self postTweet:self.postLabel.text];
 }
 
 - (void) draftPost
@@ -125,7 +125,20 @@
 
 }
 
-
+- (void) postTweet: (NSString *) tweetText
+{
+	// add signature to tweet
+	tweetText = [tweetText stringByAppendingString:@" via ThoughtBot"];
+	
+	// create composer
+	TWTRComposer *composer = [[TWTRComposer alloc] init];
+	[composer setText:tweetText];
+	
+	// launch
+	[composer showFromViewController:self completion:^(TWTRComposerResult result) {
+		NSLog(@"Result: %ld", result);
+	}];
+}
 
 
 @end
