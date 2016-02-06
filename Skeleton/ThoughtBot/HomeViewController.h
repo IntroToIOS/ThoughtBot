@@ -9,13 +9,11 @@
 #import <UIKit/UIKit.h>
 #import <TwitterKit/TwitterKit.h>
 
-@interface HomeViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface HomeViewController : UIViewController 
 
-@property TWTRLogInButton *loginButton;
 @property TWTRSession *currentSession;
 
 @property NSArray<TWTRUser *> *friends;
-@property UITableView *friendsTable;
 
 - (instancetype)init;
 

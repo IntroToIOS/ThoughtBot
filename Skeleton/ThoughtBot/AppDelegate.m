@@ -26,17 +26,6 @@ static NSString *kTwitterConsumerSecret = @"xvTyAkhJe8HNXwpBmM3gwVMIkeaFQW38das0
 	// Set up Twitter
 	[[Twitter sharedInstance] startWithConsumerKey:kTwitterConsumerKey consumerSecret:kTwitterConsumerSecret];
 	[Fabric with:@[[Twitter sharedInstance]]];
-
-	// Home view controller
-	HomeViewController *homeVC = [[HomeViewController alloc] init];
-	
-	// Navigation
-	UINavigationController *navVC = [[UINavigationController alloc] initWithRootViewController:homeVC];
-	
-	// Set up window 
-	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-	self.window.rootViewController = navVC;
-	[self.window makeKeyAndVisible];
 	
 	return YES;
 }

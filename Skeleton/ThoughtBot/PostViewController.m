@@ -23,28 +23,6 @@
 
 - (void)viewDidLoad
 {
-	self.view.backgroundColor = [UIColor whiteColor];
-
-	self.postLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 84, self.view.frame.size.width - 40, 350)];
-	self.postLabel.backgroundColor = [UIColor whiteColor];
-	self.postLabel.font = [UIFont systemFontOfSize:18];
-	self.postLabel.numberOfLines = 0;
-	[self.view addSubview:self.postLabel];
-	
-	self.reloadButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	self.reloadButton.frame = CGRectMake(20, 84 + 350  + 20, self.view.frame.size.width - 40, 50);
-	self.reloadButton.backgroundColor = [UIColor lightGrayColor];
-	[self.reloadButton setAdjustsImageWhenHighlighted:YES];
-	[self.reloadButton setTitle:@"Try again" forState:UIControlStateNormal];
-	[self.reloadButton addTarget:self action:@selector(didTapReload:) forControlEvents:UIControlEventTouchUpInside];
-	[self.view addSubview:self.reloadButton];
-	
-	self.postButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	self.postButton.frame = CGRectMake(20, 84 + 350 + 20 + 50 + 20, self.view.frame.size.width - 40, 50);
-	self.postButton.backgroundColor = [[TWTRLogInButton alloc] init].backgroundColor;
-	[self.postButton setTitle:@"Post to Twitter" forState:UIControlStateNormal];
-	[self.postButton addTarget:self action:@selector(didTapPost:) forControlEvents:UIControlEventTouchUpInside];
-	[self.view addSubview:self.postButton];
 	
 	[self trainFriendModel];
 
@@ -106,7 +84,6 @@
 						[combinedTweets appendFormat:@"%@ ", word];
 					}
 				}
-				
 				
 				// train model
 				self.friendModel = [[MarkovModel alloc] initWithKValue:6 text:combinedTweets];

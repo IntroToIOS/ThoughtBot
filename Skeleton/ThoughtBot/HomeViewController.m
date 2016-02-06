@@ -12,8 +12,6 @@
 
 @interface HomeViewController()
 
-@property (nonatomic, copy) void (^twitterLoginCallback)(TWTRSession *session, NSError *error);
-
 @end
 
 @implementation HomeViewController
@@ -24,46 +22,7 @@
 	self = [super init];
 	if (self) {
 		self.friends = @[];
-		
-		__weak HomeViewController *weakSelf = self;
-		
-		self.twitterLoginCallback = ^void (TWTRSession *session, NSError *error) {
-			
-			// logged in successfully
-			if (session) {
-				
-				weakSelf.currentSession = session;
-				
-				// show table view
-				CGRect friendsTableRect = CGRectMake(0, 64, weakSelf.view.frame.size.width, self.view.frame.size.height - 64 - 50);
-				weakSelf.friendsTable = [[UITableView alloc] initWithFrame:friendsTableRect style:UITableViewStylePlain];
-				weakSelf.friendsTable.dataSource = weakSelf;
-				weakSelf.friendsTable.delegate = weakSelf;
-				[weakSelf.view addSubview:weakSelf.friendsTable];
-				
-				// show signed in username at bottom
-				CGRect signedInFrame = CGRectMake(0, weakSelf.view.frame.size.height - 50, weakSelf.view.frame.size.width, 40);
-				UILabel *signedInLabel = [[UILabel alloc] initWithFrame:signedInFrame];
-				[weakSelf.view addSubview:signedInLabel];
-				
-				// text: "Signed in as [user]"
-				NSString *signedInText = [NSString stringWithFormat:@"Signed in as %@", [session userName]];
-				signedInLabel.text = signedInText;
-				signedInLabel.textColor = [UIColor blackColor];
-				signedInLabel.textAlignment = NSTextAlignmentCenter;
-				
-				// remove log in button
-				weakSelf.loginButton.alpha = 0;
-				
-				// fetch Twitter friends
-				[weakSelf getTwitterFriends];
-			}
-			// logged in failed
-			else {
-				NSLog(@"Login error: %@", [error localizedDescription]);
-			}
-		};
-		
+	
 	}
 	return self;
 }
@@ -72,13 +31,6 @@
 	[super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 	
-	self.view.backgroundColor = [UIColor whiteColor];
-	
-	self.loginButton = [TWTRLogInButton buttonWithLogInCompletion:self.twitterLoginCallback ];
-	
-	self.loginButton.center = self.view.center;
-	[self.view addSubview:self.loginButton];
-
 }
 
 
@@ -100,7 +52,7 @@
 				NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
 				NSLog(@"Results: %@", json);
 				[self parseTwitterFriendsForResponse:json];
-				[self.friendsTable reloadData];
+				
 			}
 			else {
 				NSLog(@"Error: %@", connectionError);
@@ -121,42 +73,6 @@
 	}
 }
 
-#pragma mark - Table View Data Source
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-	return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-	return [self.friends count];
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	static NSString *cellIdentifier = @"FriendCell";
-	
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-	
-	if (cell == nil) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
-	}
-	
-	TWTRUser *currentFriend = [self.friends objectAtIndex:indexPath.row];
-	cell.textLabel.text = currentFriend.name;
-	cell.detailTextLabel.text = [NSString  stringWithFormat:@"@%@", currentFriend.screenName];
-	
-	return cell;
-}
-
-#pragma mark - Table View Delegate
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-	TWTRUser *selectedFriend = [self.friends objectAtIndex:indexPath.row];
-	PostViewController *postVC = [[PostViewController alloc] initWithFriend:selectedFriend];
-	postVC.currentSession = self.currentSession;
-	[self.navigationController pushViewController:postVC animated:YES];
-}
 #pragma mark - Memory
 - (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];
